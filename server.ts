@@ -17,12 +17,20 @@ const typeDefs = `type User {
 }
 
 type Query {
-    users: [User]
+    users(id: ID!): [User]
 }
 `
 const resolvers = {
     Query: {
-        users: (obj: any, args: any, context: any, info: any) => context.users,
+        users: (obj: any, args: any, context: any, info: any) => {
+            console.log("arg ==>> ", args)
+            const filter = args;
+            if (!filter) {
+                return context.users;
+            }
+
+            return context.users.filter( (item: any) => item.id == filter.id)
+        },
     },
 };
 
@@ -46,6 +54,7 @@ app.use(
         graphiql: true
     })
 )
+
 
 
 app.listen(port, () => {
